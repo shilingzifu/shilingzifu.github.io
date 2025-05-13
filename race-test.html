@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>幻想种族测试</title>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f5e6d3;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .question-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .option-btn:hover {
+            background: #357abd;
+        }
+
+        #result {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="color: #2c3e50; text-align: center;">🛡️ 幻想世界种族测试</h1>
+    <div id="quiz-container"></div>
+
+    <script>
+        // 测试配置
+        const testConfig = {
+            questions: [
+                {
+                    text: "1. 你更喜欢哪种环境？",
+                    options: [
+                        { text: "A. 幽静的森林", score: "精灵" },
+                        { text: "B. 炎热的沙漠", score: "兽人" },
+                        { text: "C. 巍峨的山脉", score: "矮人" }
+                    ]
+                },
+                {
+                    text: "2. 战斗时你更倾向于？",
+                    options: [
+                        { text: "A. 用弓箭远程攻击", score: "精灵" },
+                        { text: "B. 用战斧正面冲锋", score: "兽人" },
+                        { text: "C. 用锤子粉碎敌人", score: "矮人" }
+                    ]
+                },
+                {
+                    text: "3. 你更重视哪种品质？",
+                    options: [
+                        { text: "A. 智慧", score: "精灵" },
+                        { text: "B. 勇气", score: "兽人" },
+                        { text: "C. 忠诚", score: "矮人" }
+                    ]
+                },
+                {
+                    text: "4. 空闲时你喜欢？",
+                    options: [
+                        { text: "A. 研读古籍", score: "精灵" },
+                        { text: "B. 锻炼体魄", score: "兽人" },
+                        { text: "C. 打造器具", score: "矮人" }
+                    ]
+                }
+            ],
+            results: {
+                "精灵": {
+                    emoji: "🌟",
+                    desc: "森林之子：你拥有敏锐的感知和优雅的气质，擅长魔法与弓箭"
+                },
+                "兽人": {
+                    emoji: "🪓",
+                    desc: "战争咆哮：强壮的体魄和无畏的勇气让你成为战场主宰"
+                },
+                "矮人": {
+                    emoji: "⛏️",
+                    desc: "山丘之王：精湛的锻造技术和顽固的性格是你的标志"
+                }
+            }
+        };
+
+        // 测试状态
+        let currentQuestion = 0;
+        let scores = { 精灵: 0, 兽人: 0, 矮人: 0 };
+
+        // 初始化测试
+        function initTest() {
+            showQuestion(currentQuestion);
+        }
+
+        // 显示题目
+        function showQuestion(index) {
+            const question = testConfig.questions[index];
+            let html = `
+                <div class="question-box">
+                    <h3>${question.text}</h3>
+                    ${question.options.map(opt => `
+                        <button class="option-btn" onclick="selectOption('${opt.score}')">
+                            ${opt.text}
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById("quiz-container").innerHTML = html;
+        }
+
+        // 选择选项
+        function selectOption(race) {
+            scores[race]++;
+            currentQuestion++;
+
+            if (currentQuestion < testConfig.questions.length) {
+                showQuestion(currentQuestion);
+            } else {
+                showResult();
+            }
+        }
+
+        // 显示结果
+        function showResult() {
+            const maxScore = Math.max(...Object.values(scores));
+            const resultRace = Object.keys(scores).find(race => scores[race] === maxScore);
+            const result = testConfig.results[resultRace];
+
+            document.getElementById("quiz-container").innerHTML = `
+                <div class="question-box">
+                    <h2>${result.emoji} 测试结果</h2>
+                    <p>${result.desc}</p>
+                    <button 
+                        class="option-btn" 
+                        style="background: #27ae60;"
+                        onclick="location.reload()"
+                    >
+                        重新测试
+                    </button>
+                </div>
+            `;
+        }
+
+        // 启动测试
+        initTest();
+    </script>
+</body>
+</html>
